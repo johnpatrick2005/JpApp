@@ -14,8 +14,22 @@ namespace JpApp.Pages
 
         public List<Person> People { get; set; }
 
-        public void OnGet(string? sortBy = null, string? sortAsc = "true")
+        [BindProperty]
+        public SearchParameters? SearchParams { get; set; }
+
+        public void OnGet(string? keyword = "", string? searchBy = "", string? sortBy = null, string? sortAsc = "true")
         {
+            if (SearchParams == null)
+            {
+                SearchParams = new SearchParameters()
+                {
+                    SortBy = sortBy,
+                    SortAsc = sortAsc == "true",
+                    SearchBy = searchBy,
+                    Keyword = keyword
+                };
+            }
+
             List<Person> people = new List<Person>()
             {
                 new Person {
@@ -110,15 +124,35 @@ namespace JpApp.Pages
                 }
             };
 
-            if (sortBy == null || sortAsc == null)
+            if (!string.IsNullOrEmpty(SearchParams.SearchBy) && !string.IsNullOrEmpty(SearchParams.Keyword))
+            {
+                if (SearchParams.SearchBy.ToLower() == "name")
+                {
+                    people = people.Where(p => p.Name != null && p.Name.ToLower().Contains(SearchParams.Keyword.ToLower())).ToList();
+                }
+                else if (SearchParams.SearchBy.ToLower() == "age")
+                {                 
+                    people = people.Where(p => p.Age.ToString().Contains(SearchParams.Keyword)).ToList();
+                }
+                else if (SearchParams.SearchBy.ToLower() == "gender")
+                {
+                    people = people.Where(p => p.Gender != null && p.Gender.ToLower().Contains(SearchParams.Keyword.ToLower())).ToList();
+                }
+                else if (SearchParams.SearchBy.ToLower() == "emailaddress")
+                {
+                    people = people.Where(p => p.EmailAddress != null && p.EmailAddress.ToLower().Contains(SearchParams.Keyword.ToLower())).ToList();
+                }
+            }
+
+            if (SearchParams.SortBy == null || SearchParams.SortAsc == null)
             {
                 this.People = people;
                 return;
             }
 
-            bool ascending = sortAsc.ToLower() == "true";
+            bool ascending = SearchParams.SortAsc == true;
 
-            this.People = sortBy.ToLower() switch
+            this.People = SearchParams.SortBy.ToLower() switch
             {
                 "name" => ascending ? people.OrderBy(p => p.Name).ToList() : people.OrderByDescending(p => p.Name).ToList(),
                 "age" => ascending ? people.OrderBy(p => p.Age).ToList() : people.OrderByDescending(p => p.Age).ToList(),
@@ -134,6 +168,14 @@ namespace JpApp.Pages
             public int Age { get; set; }
             public string? Gender { get; set; }
             public string? EmailAddress { get; set; }
+        }
+
+        public class SearchParameters
+        {
+            public string? SearchBy { get; set; }
+            public string? Keyword { get; set; }
+            public string? SortBy { get; set; }
+            public bool? SortAsc { get; set; }
         }
     }
 }

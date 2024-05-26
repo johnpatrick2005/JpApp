@@ -1,6 +1,5 @@
 ﻿@page
-@model Index
-
+@model JpApp.Pages.Index
 @{
     ViewData["Title"] = "Home page";
 }
@@ -10,35 +9,49 @@
     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
+<div class="input-group mb-3">
+    <label class="input-group-text" for="searchBy">Search By</label>
+    <select class="form-select" id="searchBy" asp-for="SearchParams.SearchBy">
+        <option value="" selected>Choose...</option>
+        <option value="Name">Name</option>
+        <option value="Age">Age</option>
+        <option value="Gender">Gender</option>
+        <option value="EmailAddress">Email Address</option>
+    </select>
+
+    <input type="text" id="keyword" class="form-control" asp-for="SearchParams.Keyword">
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="search()"><i class="bi bi-search"></i></button>
+</div>
+
 <table class="table">
     <thead>
         <tr>
             <th scope="col">
                 Name
                 <div class="btn-group" role="group" aria-label="">
-                    <a href="~/index?sortBy=name&sortAsc=false" type="button" class="btn btn-secondary">&lt;</a>
-                    <a href="~/index?sortBy=name&sortAsc=true" type="button" class="btn btn-secondary">&gt;</a>
+                    <a href="~/index?sortBy=Name&sortAsc=false" type="button" class="btn btn-secondary">&lt;</a>
+                    <a href="~/index?sortBy=Name&sortAsc=true" type="button" class="btn btn-secondary">&gt;</a>
                 </div>
             </th>
             <th scope="col">
                 Age
                 <div class="btn-group" role="group" aria-label="">
-                    <a href="~/index?sortBy=age&sortAsc=false" type="button" class="btn btn-secondary">&lt;</a>
-                    <a href="~/index?sortBy=age&sortAsc=true" type="button" class="btn btn-secondary">&gt;</a>
+                    <a href="~/index?sortBy=Age&sortAsc=false" type="button" class="btn btn-secondary">&lt;</a>
+                    <a href="~/index?sortBy=Age&sortAsc=true" type="button" class="btn btn-secondary">&gt;</a>
                 </div>
             </th>
             <th scope="col">
                 Gender
                 <div class="btn-group" role="group" aria-label="">
-                    <a href="~/index?sortBy=gender&sortAsc=false" type="button" class="btn btn-secondary">&lt;</a>
-                    <a href="~/index?sortBy=gender&sortAsc=true" type="button" class="btn btn-secondary">&gt;</a>
+                    <a href="~/index?sortBy=Gender&sortAsc=false" type="button" class="btn btn-secondary">&lt;</a>
+                    <a href="~/index?sortBy=Gender&sortAsc=true" type="button" class="btn btn-secondary">&gt;</a>
                 </div>
             </th>
             <th scope="col">
                 Email Address
                 <div class="btn-group" role="group" aria-label="">
-                    <a href="~/index?sortBy=emailaddress&sortAsc=false" type="button" class="btn btn-secondary">&lt;</a>
-                    <a href="~/index?sortBy=emailaddress&sortAsc=true" type="button" class="btn btn-secondary">&gt;</a>
+                    <a href="~/index?sortBy=EmailAddress&sortAsc=false" type="button" class="btn btn-secondary">&lt;</a>
+                    <a href="~/index?sortBy=EmailAddress&sortAsc=true" type="button" class="btn btn-secondary">&gt;</a>
                 </div>
             </th>
         </tr>
@@ -55,3 +68,11 @@
         }
     </tbody>
 </table>
+
+@section Scripts {
+    <script>
+        function search() {
+            window.location = "../index?sortBy=Name&sortAsc=false&searchBy=" + $("#searchBy").val() + "&keyword=" + $("#keyword").val()
+        }
+    </script>
+}
