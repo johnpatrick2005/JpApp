@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace JpApp.Pages
 {
@@ -17,7 +21,8 @@ namespace JpApp.Pages
         [BindProperty]
         public SearchParameters? SearchParams { get; set; }
 
-        public void OnGet(string? keyword = "", string? searchBy = "", string? sortBy = null, string? sortAsc = "true")
+
+        public void OnGet(string? keyword = "", string? searchBy = "", string? sortBy = null, string? sortAsc = "true", int pageSize = 5, int pageIndex = 1)
         {
             if (SearchParams == null)
             {
@@ -26,11 +31,13 @@ namespace JpApp.Pages
                     SortBy = sortBy,
                     SortAsc = sortAsc == "true",
                     SearchBy = searchBy,
-                    Keyword = keyword
+                    Keyword = keyword,
+                    PageIndex = pageIndex,
+                    PageSize = pageSize
                 };
             }
 
-            List<Person> people = new List<Person>()
+            List<Person>? people = new List<Person>()
             {
                 new Person {
                     Name = "Alice Johnson",
@@ -38,84 +45,98 @@ namespace JpApp.Pages
                     Gender = "Female",
                     EmailAddress = "alice.johnson@example.com"
                 },
+
                 new Person {
                     Name = "Bob Smith",
                     Age = 25,
                     Gender = "Male",
                     EmailAddress = "bob.smith@example.com"
                 },
+
                 new Person {
                     Name = "Carol Williams",
                     Age = 28,
                     Gender = "Female",
                     EmailAddress = "carol.williams@example.com"
                 },
+
                 new Person {
                     Name = "David Brown",
                     Age = 35,
                     Gender = "Male",
                     EmailAddress = "david.brown@example.com"
                 },
+
                 new Person {
                     Name = "Eva Green",
                     Age = 40,
                     Gender = "Female",
                     EmailAddress = "eva.green@example.com"
                 },
+
                 new Person {
                     Name = "Frank White",
                     Age = 45,
                     Gender = "Male",
                     EmailAddress = "frank.white@example.com"
                 },
+
                 new Person {
                     Name = "Grace Black",
                     Age = 50,
                     Gender = "Female",
                     EmailAddress = "grace.black@example.com"
                 },
+
                 new Person {
                     Name = "Henry Blue",
                     Age = 55,
                     Gender = "Male",
                     EmailAddress = "henry.blue@example.com"
                 },
+
                 new Person {
                     Name = "Isla Brown",
                     Age = 60,
                     Gender = "Female",
                     EmailAddress = "isla.brown@example.com"
                 },
+
                 new Person {
                     Name = "Jack Grey",
                     Age = 65,
                     Gender = "Male",
                     EmailAddress = "jack.grey@example.com"
                 },
+
                 new Person {
                     Name = "Karen White",
                     Age = 70,
                     Gender = "Female",
                     EmailAddress = "karen.white@example.com"
                 },
+
                 new Person {
                     Name = "Larry Green",
                     Age = 75,
                     Gender = "Male",
                     EmailAddress = "larry.green@example.com"
                 },
+
                 new Person {
                     Name = "Mona Black",
                     Age = 80,
                     Gender = "Female",
                     EmailAddress = "mona.black@example.com"
                 },
+
                 new Person {
                     Name = "Nina Blue",
                     Age = 85,
                     Gender = "Female",
                     EmailAddress = "nina.blue@example.com"
                 },
+
                 new Person {
                     Name = "Oscar Red",
                     Age = 90,
@@ -131,7 +152,7 @@ namespace JpApp.Pages
                     people = people.Where(p => p.Name != null && p.Name.ToLower().Contains(SearchParams.Keyword.ToLower())).ToList();
                 }
                 else if (SearchParams.SearchBy.ToLower() == "age")
-                {                 
+                {
                     people = people.Where(p => p.Age.ToString().Contains(SearchParams.Keyword)).ToList();
                 }
                 else if (SearchParams.SearchBy.ToLower() == "gender")
@@ -176,6 +197,11 @@ namespace JpApp.Pages
             public string? Keyword { get; set; }
             public string? SortBy { get; set; }
             public bool? SortAsc { get; set; }
+            public int? PageSize { get; set; }
+            public int? PageIndex { get; set; }
+            public int? PageCount { get; set; }
+            public int? SearchCount { get; set; }
         }
+
     }
 }

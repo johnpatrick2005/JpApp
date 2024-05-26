@@ -20,8 +20,9 @@
     </select>
 
     <input type="text" id="keyword" class="form-control" asp-for="SearchParams.Keyword">
-    <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="search()"><i class="bi bi-search"></i></button>
+    <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="search()">Search</button>
 </div>
+
 
 <table class="table">
     <thead>
@@ -68,6 +69,38 @@
         }
     </tbody>
 </table>
+
+<nav aria-label="...">
+    <ul class="pagination">
+        @{
+            var paramString = "sortBy=" + Model.SearchParams!.SortBy + "&sortAsc=" + Model.SearchParams!.SortAsc + "&keyword=" + Model.SearchParams!.Keyword + "&searchBy=" + Model.SearchParams!.SearchBy;
+        }
+        @{
+            if (Model.SearchParams!.PageIndex > 1)
+            {
+                int prev = 1;
+                prev = (Model.SearchParams!.PageIndex!.Value - 1) < 1 ? 1 : (Model.SearchParams!.PageIndex!.Value - 1);
+
+                <li class="page-item">
+                    <a class="page-link" href="~/index?@(paramString)&pageSize=@(Model.SearchParams!.PageSize)&pageIndex=@(prev)">Previous</a>
+                </li>
+            }
+        }
+        <li class="page-item active"><a class="page-link" href="#">@Model.SearchParams.PageIndex of @(Model.SearchParams!.PageCount)</a></li>
+        @{
+            if (Model.SearchParams!.PageIndex < Model.SearchParams.PageCount)
+            {
+
+                int next = 1;
+                next = (Model.SearchParams!.PageIndex!.Value + 1) > Model.SearchParams!.PageCount ? Model.SearchParams!.PageCount.Value : (Model.SearchParams!.PageIndex!.Value + 1);
+
+                <li class="page-item">
+                    <a class="page-link" href="~/index?@(paramString)&pageSize=@(Model.SearchParams!.PageSize)&pageIndex=@(next)">Next</a>
+                </li>
+            }
+        }
+    </ul>
+</nav>
 
 @section Scripts {
     <script>
